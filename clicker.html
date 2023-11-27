@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style></style>
+</head>
+
+<body>
+    <h1>YIPPEE Clicker</h1>
+    <img id="Pic" src="https://media.tenor.com/hHXnKKmfKvAAAAAC/yippee-yippee-gif.gif">
+    <p id="points"></p>
+    <img id="button"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTKHpkHgrq-EA-dSj-QC5SCWvHajiCGF1bVg:https://www.freeiconspng.com/thumbs/button-icon-png/green-button-icon-png-13.png&usqp=CAU">
+    <img id="autobutton" src=https://i5.peapod.com/c/FF/FF9K8.jpg>
+    <p>score multiplier</p>
+
+</body>
+
+</html>
+<script>
+    document.getElementById("Pic").addEventListener("click", increaseScore)
+    document.getElementById("button").addEventListener("click", upgrade)
+    document.getElementById("autobutton").addEventListener("click", autoclicker)
+    var score = 0
+    var multiplier = 1
+    function increaseScore() {
+        score = score + multiplier
+        document.getElementById("points").innerText = score
+    }
+    function upgrade() {
+
+        if (score >= 10) {
+            score = score - 10
+            multiplier = multiplier + 1
+        }
+        document.getElementById("points").innerText = score
+    }
+    function autoclicker() {
+        if (score >= 100) {
+            score = score - 100
+            setInterval(increaseScore, 500)
+
+        }
+    }
+</script>

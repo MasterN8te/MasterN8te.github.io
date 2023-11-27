@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Boing box</title>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            position: absolute;
+            top: 100px;
+            left: 100px;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="box"></div>
+</body>
+
+</html>
+<script>
+    var y = 100
+    var x = 100
+    var directionX = +50
+    var directionY = -50
+    document.getElementById("box").addEventListener("click", movebox)
+    function movebox() {
+        x = x + directionX
+        y = y + directionY
+        if (x < 10) { directionX = +50 }
+        if (x > 1800) { directionX = -50 }
+        if (y < 10) { directionY = +50 }
+        if (y > 800) { directionY = -50 }
+
+        document.getElementById("box").style.top = y + "px"
+        document.getElementById("box").style.left = x + "px"
+    }
+    setInterval(movebox, 15)
+
+
+</script>
