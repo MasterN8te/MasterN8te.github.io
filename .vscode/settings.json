@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/clicker.html"
+    "livePreview.defaultPreviewPath": "/clicker.html",
+    "liveServer.settings.port": 5502
 }
