@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>image filtering</title>
+    <style>
+        img {
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="duck" src="Mallard-Pieter-Pieterse-6x4.jpg">
+    <canvas id="canvas" width="300" height="300"></canvas>
+</body>
+
+</html>
+
+<script>
+
+    window.addEventListener("load", main);
+    var array2d = []
+    function main() {
+        var canvas = document.getElementById("canvas")
+        var ctx = canvas.getContext("2d")
+
+        var duck = document.getElementById("duck")
+        ctx.drawImage(duck, 0, 0, 300, 300)
+
+        var imageData = ctx.getImageData(0, 0, 300, 300)
+        console.log(imageData)
+        for (var i = 0; i < 300; i = i + 1) {
+            array2d.push([])
+            for (var j = 0; j < 1200; j = j + 1) {
+
+                array2d[i][j] = imageData.data[i * 1200 + j]
+            }
+        }
+        console.log(array2d)
+        // for (var i = 2; i < imageData.data.length; i = i + 4  ){
+        //     imageData.data[i] = imageData.data[i] - 100
+        // }
+        // for (var i = 1; i < imageData.data.length; i = i + 4  ){
+        //     imageData.data[i] = imageData.data[i] + 100
+        // }
+        ctx.putImageData(imageData, 0, 0)
+    }
+
+</script>
