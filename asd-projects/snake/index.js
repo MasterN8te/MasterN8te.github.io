@@ -27,7 +27,7 @@ var KEY = {
 
 // interval variable required for stopping the update function when the game ends
 var updateInterval;
-updateInterval = setInterval(update,150)
+
 // variable to keep track of the key (keycode) last pressed by the user
 var activeKey;
 
@@ -45,17 +45,17 @@ function init() {
   // TODO 4c-2: initialize the snake
   // initialize the snake's body as an empty Array
   snake.body = [];
-
   // make the first snakeSquare and set it as the head
   makeSnakeSquare(10, 10);
   snake.head = snake.body[0];
-
-  makeApple()
-
+  // TODO 4b-2: initialize the apple
+  makeApple();
   // TODO 5a: Initialize the interval
+  // start update interval
+  updateInterval = setInterval(update, 100);
 
 }
-// TODO 4b-2: initialize the apple
+
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// PROGRAM FUNCTIONS ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +65,7 @@ function init() {
  * collisions with the walls.
  */
 function update() {
+  // TODO 5b: Fill in the update function's code block
   moveSnake();
 
   if (hasHitWall() || hasCollidedWithSnake()) {
@@ -74,7 +75,6 @@ function update() {
   if (hasCollidedWithApple()) {
     handleAppleCollision();
   }
-  // TODO 5b: Fill in the update function's code block
 }
 
 function checkForNewDirection(event) {
@@ -91,15 +91,16 @@ function checkForNewDirection(event) {
   if (activeKey === KEY.RIGHT) {
     snake.head.direction = "right";
   }
-  if (activeKey === KEY.UP) {
-    snake.head.direction = "up";
-  }
   if (activeKey === KEY.DOWN) {
     snake.head.direction = "down";
   }
+  if (activeKey === KEY.UP) {
+    snake.head.direction = "up";
+  }
+
   // FILL IN THE REST
 
-  // console.log(snake.head.direction);     // uncomment me!
+  console.log(snake.head.direction);
 }
 
 function moveSnake() {
@@ -110,30 +111,46 @@ function moveSnake() {
   column for each snakeSquare in the snake's body. The parts of the snake are 
   stored in the Array snake.body and each part knows knows its current 
   column/row properties. 
-  
   */
+  for (var i = snake.body.length - 1; i > 0; i--) {
+    var snakeSquare = snake.body[i];
+
+    var nextSnakeSquare = snake.body[i - 1];
+
+    snakeSquare.direction = nextSnakeSquare.direction;
+    snakeSquare.row = nextSnakeSquare.row;
+    snakeSquare.column = nextSnakeSquare.column;
+    repositionSquare(snakeSquare);
+  }
 
   //Before moving the head, check for a new direction from the keyboard input
   checkForNewDirection();
 
+
+  // TODO 7: determine the next row and column for the snake's head
+
+  // HINT: The snake's head will need to move forward 1 square based on the value
+  // of snake.head.direction which may be one of "left", "right", "up", or "down"
+
   if (snake.head.direction === "left") {
     snake.head.column = snake.head.column - 1;
   }
+  repositionSquare(snake.head);
+
   if (snake.head.direction === "right") {
     snake.head.column = snake.head.column + 1;
   }
-  if (snake.head.direction === "up") {
-    snake.head.row = snake.head.row - 1;
-  }
+  repositionSquare(snake.head);
+
   if (snake.head.direction === "down") {
     snake.head.row = snake.head.row + 1;
   }
   repositionSquare(snake.head);
-  /* 
-  TODO 7: determine the next row and column for the snake's head
-  HINT: The snake's head will need to move forward 1 square based on the value
-  of snake.head.direction which may be one of "left", "right", "up", or "down"
-  */
+
+  if (snake.head.direction === "up") {
+    snake.head.row = snake.head.row - 1;
+  }
+  repositionSquare(snake.head);
 }
 
 function hasHitWall() {
@@ -143,9 +160,26 @@ function hasHitWall() {
   
   HINT: What will the row and column of the snake's head be if this were the case?
   */
- if (snake.head.column)
+  // the current column of snake.head
+  if (snake.head.row > ROWS) {
+    return true
+  }
+
+  if (snake.head.column > COLUMNS) {
+    return true
+  }
+
+  if (snake.head.row < 0) {
+    return true;
+  }
+
+  if (snake.head.column < 0) {
+    return true;
+  }
 
   return false;
+
+
 }
 
 function hasCollidedWithApple() {
@@ -156,6 +190,11 @@ function hasCollidedWithApple() {
   HINT: Both the apple and the snake's head are aware of their own row and column
   */
 
+  if (snake.head.row === apple.row) {
+    if (snake.head.column === apple.column) {
+      return true
+    }
+  }
   return false;
 }
 
@@ -180,6 +219,22 @@ function handleAppleCollision() {
   var row = 0;
   var column = 0;
 
+  if (snake.tail.direction === "left") {
+    row = snake.head.row
+    column = snake.head.column + 1
+  }
+  if (snake.tail.direction === "right") {
+    row = snake.head.row
+    column = snake.head.column - 1
+  }
+  if (snake.tail.direction === "up") {
+    row = snake.head.row + 1
+    column = snake.head.column
+  }
+  if (snake.tail.direction === "down") {
+    row = snake.head.row - 1
+    column = snake.head.column
+  }
   // code to determine the row and column of the snakeSquare to add to the snake
 
   makeSnakeSquare(row, column);
@@ -192,11 +247,19 @@ function hasCollidedWithSnake() {
   
   HINT: Each part of the snake's body is stored in the snake.body Array. The
   head and each part of the snake's body also knows its own row and column.
-  
   */
+  for (var i = snake.body.length - 1; i > 0; i--) {
+    if (snake.head.row === snake.body[i].row) {
+      if (snake.head.column === snake.body[i].column){
+        return true
+      }
+    }
+  }
 
   return false;
 }
+
+   
 
 function endGame() {
   // stop update function from running
@@ -302,6 +365,13 @@ function getRandomAvailablePosition() {
   var spaceIsAvailable;
   var randomPosition = {};
 
+  for (var i = 0; i < snake.body.length; i++) {
+    if (randomPosition.row === snake.body[i].row) {
+      if (randomPosition.column === snake.body[i].column){
+        return true
+      }
+    }
+  }
   /* Generate random positions until one is found that doesn't overlap with the snake */
   while (!spaceIsAvailable) {
     randomPosition.column = Math.floor(Math.random() * COLUMNS);
